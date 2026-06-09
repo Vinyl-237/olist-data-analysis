@@ -1,0 +1,5 @@
+.venv/ # environment virtual
+__pycache__/ # python cache
+.ipynb_checkpoints/ # jupyter notebook checkpoints
+*.pyc # python compiled files
+.DS_Store # file system metadata
