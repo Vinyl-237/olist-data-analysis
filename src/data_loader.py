@@ -44,7 +44,8 @@ def get_table_overview(df: pd.DataFrame, table_name: str) -> dict:
         "n_rows": df.shape[0],
         "n_cols": df.shape[1],
         "missing_cells": int(df.isna().sum().sum()), # Nombre total de cellules manquantes le .sum() deux fois pour faire la somme sur les lignes puis sur les colonnes
-        "duplicate_rows": int(df.duplicated().sum()) # Nombre de lignes dupliquées
+        "duplicate_rows": int(df.duplicated().sum()), # Nombre de lignes dupliquées
+        "fill_rate": round((1 - df.isna().sum().sum() / (df.shape[0] * df.shape[1])) * 100, 2), # Taux de remplissage (1 - nombre de cellules manquantes / nombre total de cellules) * 100 pour obtenir un pourcentage, arrondi à 2 décimales
     }
 
 def build_overview_table(tables: dict) -> pd.DataFrame:
@@ -55,4 +56,6 @@ def build_overview_table(tables: dict) -> pd.DataFrame:
         get_table_overview(df, name) # Crée un résumé pour chaque table et l'ajoute à la liste
         for name, df in tables.items() # Parcourt chaque table et construit un résumé pour chacune
     ]
-    return pd.DataFrame(overview).sort_values("n_rows", ascending=False) # Trie la table de résumé par nombre de lignes décroissant
+    df_overview = pd.DataFrame(overview).sort_values("n_rows", ascending=False) # Trie la table de résumé par nombre de lignes décroissant
+    df_overview.set_index("table", inplace=True) # Définit l'index sur la colonne "table"
+    return df_overview
